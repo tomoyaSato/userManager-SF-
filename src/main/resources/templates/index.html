@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="jp">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <link rel="stylesheet" href="css/css.css" type="text/css" media="screen" />
+        <script type="text/javascript" src="js/index.js" ></script>
+        <title>Insert title here</title>
+    </head>
+    <body>
+        <div id="container-inner">
+            <div id="contents">
+                <!-- コンテンツここから -->
+                <div class="container-fluid">
+                    <table>
+                        <thead>
+                        	<tr>
+                            	<th>No</th>
+                            	<th>data</th>
+                            </tr>
+                        </thead>
+	                        <tr th:each="d : ${msg}">
+	                            <td><span th:text="${d.no}">1</span></td>
+	                            <td><span th:text="${d.message}">本日は晴天なり。</span></td>
+	                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
