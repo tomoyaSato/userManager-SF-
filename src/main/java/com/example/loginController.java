@@ -47,6 +47,10 @@ public class LoginController {
         mv.addObject("password", txtPassword);
         return mv;
     }
+	@RequestMapping(value = "/admin/index", method = RequestMethod.GET)
+    public String menu() {
+        return "index";
+    }
 }
 
 class ViewData {
