@@ -6,6 +6,7 @@
 <body>
     <h3>ユーザー管理システム</h3>
     <form method="POST" action="/login">
+    	<p th:if="${loginError}">ログインに失敗しました。もう一度ログインをやり直して下さい。</p>
     	ID:<input type="text" name="txtId" th:value="${id}" /><br/>
         Password:<input type="text" name="txtPassword" th:value="${password}" /><br/>
         <input type="submit" value="送信" />
