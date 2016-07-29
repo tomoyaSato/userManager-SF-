@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="css/userList.css"/>
+<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
+<script>
+ $(document).ready(function(){
+    $("form[name='userListPost']").submit(function() {
+    	if($('input[name=selectUser]:checked').val() == undefined){
+    		// ユーザー未選択時処理
+    		var notSelectMsg = "ユーザーが未選択です。ユーザーを選択して下さい。";
+    		alert(notSelectMsg);
+    		return false;
+   		}else{
+   			return true;
+   		}
+    });
+
+  });
+</script>
+</head>
+<body>
+	<form method="POST" name="logout" action="/logout">
+		<font class="title">ユーザー情報一覧</font>
+		<input type="submit" value="ログアウト"/>
+	</form>
+	<form method="POST" name="userListPost" action="/userListPost">
+		<table class="list">
+			<tr>
+				<th>選択</th>
+				<th>ID</th>
+				<th>氏名</th>
+			</tr>
+			<tr th:each="UserInfo:${UserInfo}">
+				<td><input type="radio" name="selectUser" th:value="${UserInfo.id}"/></td>
+				<td th:text="${UserInfo.id}">xx</td>
+				<td th:text="${UserInfo.name}">name</td>
+			</tr>
+		</table>
+		<input type="submit" name="insert" value="登録"/>
+		<input type="submit" name="update" value="変更"/>
+		<input type="submit" name="delete" value="削除"/>
+	</form>
+</body>
+</html>

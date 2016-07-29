@@ -35,7 +35,54 @@ public class UserInfo {
 
 	@Column(name="delete_flg")
     protected boolean delete_flg;
+	public int getId() {
+		return id;
+	}
 
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Timestamp getCreate_timestamp() {
+		return create_timestamp;
+	}
+
+	public void setCreate_timestamp(Timestamp create_timestamp) {
+		this.create_timestamp = create_timestamp;
+	}
+
+	public Timestamp getUpdate_timestamp() {
+		return update_timestamp;
+	}
+
+	public void setUpdate_timestamp(Timestamp update_timestamp) {
+		this.update_timestamp = update_timestamp;
+	}
+
+	public boolean isDelete_flg() {
+		return delete_flg;
+	}
+
+	public void setDelete_flg(boolean delete_flg) {
+		this.delete_flg = delete_flg;
+	}
+	
     public UserInfo() {
     	super();
     }
@@ -53,4 +100,6 @@ public class UserInfo {
       public String toString() {
         return "[id:" + id + ", password:" + password + ", name:" + name + "]";
       }
+
+	
 }
