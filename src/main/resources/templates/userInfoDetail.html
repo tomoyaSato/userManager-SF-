@@ -1,10 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<link rel="stylesheet" type="text/css" href="css/userList.css"/>
+	<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
 	<meta charset="UTF-8"/>
 	<title>ユーザ情報管理システム</title>
 </head>
 <body>
-	<font class="title" th:text="${title}">	</font>
+	<form method="POST" name="logout" action="/logout">
+		<font class="title" th:text="${title}">	</font>
+		<input type="submit" value="ログアウト"/>
+	</form>
+	<form method="POST" action="/">
+		ID:<input type="text" name="txtId" th:value="${id}" /><br/>
+        Password:<input type="password" name="txtPassword" th:value="${password}" /><br/>
+	</form>
 </body>
 </html>
