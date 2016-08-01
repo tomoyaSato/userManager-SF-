@@ -1,5 +1,6 @@
 package com.example;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ public class MainController {
         return "Hello, Spring Boot Sample Application!";
     }
 
+    /** ログイン **/
 	@RequestMapping(value="/login")
     public ModelAndView login(ModelAndView mv)
     {
@@ -45,8 +47,8 @@ public class MainController {
 		if(thisUserInfo.size() > 0){
 			List<UserInfo> userInfoList = userInfoRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
 //			List<UserInfo> userInfoList = userInfoRepository.findAll();
-			mv.setViewName("userList");
 			mv.addObject("UserInfo", userInfoList);
+			mv.setViewName("userList");
 			return mv;
 		}else{
 	        mv.setViewName("login");
@@ -65,27 +67,89 @@ public class MainController {
     public String menu() {
         return "index";
     }
+
+	/** ユーザー情報一覧 **/
 	@RequestMapping(value = "/userListPost", params = "insert", method=RequestMethod.POST)
 	public ModelAndView userListPostInsert(@RequestParam("selectUser") String selectUserId,
 			ModelAndView mv){
 		mv.setViewName("userInfoDetail");
 		mv.addObject("title", "ユーザー情報登録");
+		mv.addObject("submitButtonName","insert");
+		mv.addObject("submitButtonValue", "登録");
+		mv.addObject("showPasswordChangeCheckBox", false);
 		return mv;
 
 	}
+
 	@RequestMapping(value = "/userListPost", params = "update", method=RequestMethod.POST)
 	public ModelAndView userListPostUpdate(@RequestParam("selectUser") String selectUserId,
 			ModelAndView mv){
+		if(selectUserId.equals("")){
+			// ユーザー未選択時処理
+			mv.addObject("errorMessage", "ユーザーが未選択です。");
+			return backFromUFI(mv);
+		}
+		List<UserInfo> thisUserInfo = userInfoRepository.findById(Integer.parseInt(selectUserId));
 		mv.setViewName("userInfoDetail");
 		mv.addObject("title", "ユーザー情報更新");
+		mv.addObject("submitButtonName","update");
+		mv.addObject("submitButtonValue", "更新");
+		mv.addObject("showPasswordChangeCheckBox", true);
+		mv.addObject("id",thisUserInfo.get(0).id);
+		mv.addObject("name",thisUserInfo.get(0).name);
 		return mv;
-
 	}
 	@RequestMapping(value = "/userListPost", params = "delete", method=RequestMethod.POST)
 	public ModelAndView userListPostDelete(@RequestParam("selectUser") String selectUserId,
 			ModelAndView mv){
 
 		return mv;
+	}
 
+	/** ユーザー情報詳細 **/
+	@RequestMapping(value = "/userInfoDetail", params = "backPage", method=RequestMethod.POST)
+	public ModelAndView backFromUFI(ModelAndView mv){
+		List<UserInfo> userInfoList = userInfoRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
+		mv.addObject("UserInfo", userInfoList);
+		mv.setViewName("userList");
+		return mv;
+	}
+
+	@RequestMapping(value = "/userInfoDetail", params = "insert", method=RequestMethod.POST)
+	public ModelAndView userInfoInsert(
+			@RequestParam("txtPassword") String txtPassword,
+	        @RequestParam("txtName") String txtName,
+	        ModelAndView mv){
+		UserInfo insertUserInfo = new UserInfo();
+		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
+		insertUserInfo.name = txtName;
+		insertUserInfo.password = txtPassword;
+		insertUserInfo.create_timestamp = insertTimestamp;
+		insertUserInfo.update_timestamp = insertTimestamp;
+		insertUserInfo.delete_flg = false;
+		userInfoRepository.save(insertUserInfo);
+
+		return userListPostUpdate(String.valueOf(insertUserInfo.id),mv);
+	}
+
+	@RequestMapping(value = "/userInfoDetail", params = "update", method=RequestMethod.POST)
+	public ModelAndView userInfoUpdate(
+			@RequestParam("txtId") String txtId,
+			@RequestParam("txtPassword") String txtPassword,
+	        @RequestParam("txtName") String txtName,
+	        ModelAndView mv){
+
+
+		UserInfo updateUserInfo = new UserInfo();
+		List<UserInfo> thisUserInfo = userInfoRepository.findById(Integer.parseInt(txtId));
+
+		updateUserInfo = thisUserInfo.get(0);
+		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
+		updateUserInfo.name = txtName;
+		updateUserInfo.password = txtPassword;
+		updateUserInfo.update_timestamp = insertTimestamp;
+		userInfoRepository.save(updateUserInfo);
+
+		return userListPostUpdate(String.valueOf(updateUserInfo.id),mv);
 	}
 }

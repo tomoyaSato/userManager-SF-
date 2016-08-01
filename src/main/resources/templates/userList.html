@@ -1,24 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="jp">
 <head>
 <meta charset="UTF-8"/>
 <title>Insert title here</title>
 <link rel="stylesheet" type="text/css" href="css/userList.css"/>
 <script type="text/javascript" src="js/jquery-3.1.0.js"></script>
 <script>
- $(document).ready(function(){
-    $("form[name='userListPost']").submit(function() {
-    	if($('input[name=selectUser]:checked').val() == undefined){
-    		// ユーザー未選択時処理
-    		var notSelectMsg = "ユーザーが未選択です。ユーザーを選択して下さい。";
-    		alert(notSelectMsg);
-    		return false;
-   		}else{
-   			return true;
-   		}
-    });
+$(document).ready(function(){
 
-  });
+});
 </script>
 </head>
 <body>
@@ -26,6 +16,7 @@
 		<font class="title">ユーザー情報一覧</font>
 		<input type="submit" value="ログアウト"/>
 	</form>
+	<font class="errorMessage" th:text="${errorMessage}"></font>
 	<form method="POST" name="userListPost" action="/userListPost">
 		<table class="list">
 			<tr>
@@ -39,6 +30,9 @@
 				<td th:text="${UserInfo.name}">name</td>
 			</tr>
 		</table>
+		<!-- ラジオボタン未選択時値が送信されない問題の対応 -->
+		<input type="radio" name="selectUser" value="" checked="checked" style="display:none;" />
+
 		<input type="submit" name="insert" value="登録"/>
 		<input type="submit" name="update" value="変更"/>
 		<input type="submit" name="delete" value="削除"/>

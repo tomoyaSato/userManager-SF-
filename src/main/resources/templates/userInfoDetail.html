@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="jp">
 <head>
 	<link rel="stylesheet" type="text/css" href="css/userList.css"/>
 	<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
@@ -11,9 +11,13 @@
 		<font class="title" th:text="${title}">	</font>
 		<input type="submit" value="ログアウト"/>
 	</form>
-	<form method="POST" action="/">
-		ID:<input type="text" name="txtId" th:value="${id}" /><br/>
-        Password:<input type="password" name="txtPassword" th:value="${password}" /><br/>
+	<form method="POST" action="/userInfoDetail">
+		ID:<input type="text" name="txtId" th:value="${id}" disabled="disabled" /><br/>
+        Password:<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/><br/>
+        <input type="checkbox" th:if="${showPasswordChangeCheckBox}" /><p th:if="${showPasswordChangeCheckBox}">Passwordを変更する</p>
+        ユーザー名:<input type="text" name="txtName" th:value="${name}" /><br/>
+        <input type="submit" name="backPage" value="戻る" />
+        <input type="submit" th:name="${submitButtonName}" th:value="${submitButtonValue}" />
 	</form>
 </body>
 </html>

@@ -3,7 +3,7 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 */
-/* 
+/*
     Created on : 2016/07/11, 10:47:34
     Author     : sac
 */
@@ -11,12 +11,17 @@ h3{
     color: #6666ff;
 }
 
-table, td, th { 
+table, td, th {
     border: 1px #6666ff solid;
     border-collapse: collapse;
 }
 
 font.title{
     font-size: large;
+}
+
+font.errorMessage{
+	font-weight: bolder;
+	color: #FF0000;
 }
 
