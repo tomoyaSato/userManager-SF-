@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="jp">
+	<body>
+		<header th:fragment="header">
+			<form id="logoutForm" method="POST" name="logout" action="/logout">
+				<p id="title">ユーザー管理システム</p>
+				<input id="logoutButton" type="submit" value="ログアウト"/>
+			</form>
+		</header>
+	</body>
+</html>

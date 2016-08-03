@@ -1,0 +1,28 @@
+@CHARSET "UTF-8";
+body{
+	margin:0px;
+}
+
+#mainContents{
+	margin:8px;
+}
+
+header{
+	margin:0px;
+	padding:8px;
+	background-color: #6e6eff;
+}
+
+#title{
+	font-weight: bolder;
+	font-style: italic;
+	color: #ffffff;
+	display: inline;
+}
+
+#logoutButton{
+	float:right;
+}
+#logoutForm{
+	margin: 0px;
+}

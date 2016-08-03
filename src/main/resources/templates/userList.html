@@ -1,41 +1,37 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="jp">
 <head>
-<meta charset="UTF-8"/>
-<title>Insert title here</title>
-<link rel="stylesheet" type="text/css" href="css/userList.css"/>
-<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
-<script>
-$(document).ready(function(){
-
-});
-</script>
+	<title>ユーザー管理システム</title>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet" type="text/css" href="css/common.css"/>
+	<link rel="stylesheet" type="text/css" href="css/userList.css"/>
+	<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
 </head>
 <body>
-	<form method="POST" name="logout" action="/logout">
-		<pre class="title">ユーザー情報一覧</pre>
-		<input type="submit" value="ログアウト"/>
-	</form>
-	<pre class="errorMessage" th:text="${errorMessage}"></pre>
-	<form method="POST" name="userListPost" action="/userListPost">
-		<table class="list">
-			<tr>
-				<th>選択</th>
-				<th>ID</th>
-				<th>氏名</th>
-			</tr>
-			<tr th:each="UserInfo:${UserInfo}">
-				<td><input type="radio" name="selectUser" th:value="${UserInfo.id}"/></td>
-				<td th:text="${UserInfo.id}">xx</td>
-				<td th:text="${UserInfo.name}">name</td>
-			</tr>
-		</table>
-		<!-- ラジオボタン未選択時値が送信されない問題の対応 -->
-		<input type="radio" name="selectUser" value="" checked="checked" style="display:none;" />
+	<div th:replace="common/header :: header"></div>
+	<div id="mainContents">
+		<h3>ユーザー情報一覧</h3>
+		<pre class="errorMessage" th:text="${errorMessage}"></pre>
+		<form method="POST" name="userListPost" action="/userListPost">
+			<table class="list">
+				<tr>
+					<th>選択</th>
+					<th>ID</th>
+					<th>氏名</th>
+				</tr>
+				<tr th:each="UserInfo:${UserInfo}">
+					<td><input type="radio" name="selectUser" th:value="${UserInfo.id}"/></td>
+					<td th:text="${UserInfo.id}">xx</td>
+					<td th:text="${UserInfo.name}">name</td>
+				</tr>
+			</table>
+			<!-- ラジオボタン未選択時値が送信されない問題の対応 -->
+			<input type="radio" name="selectUser" value="" checked="checked" style="display:none;" />
 
-		<input type="submit" name="insert" value="登録"/>
-		<input type="submit" name="update" value="変更"/>
-		<input type="submit" name="delete" value="削除"/>
-	</form>
+			<input type="submit" name="insert" value="登録"/>
+			<input type="submit" name="update" value="変更"/>
+			<input type="submit" name="delete" value="削除"/>
+		</form>
+	</div>
 </body>
 </html>

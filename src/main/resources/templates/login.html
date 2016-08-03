@@ -1,15 +1,19 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="jp">
 <head>
-    <title>thymeleaf sample</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>ユーザー管理システム</title>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="css/common.css"/>
 </head>
 <body>
-    <h3>ユーザー管理システム</h3>
-    <form method="POST" action="/">
-    	<p th:if="${loginError}">ログインに失敗しました。もう一度ログインをやり直して下さい。</p>
-    	ID:<input type="text" name="txtId" th:value="${id}" /><br/>
-        Password:<input type="password" name="txtPassword" th:value="${password}" /><br/>
-        <input type="submit" value="送信" />
-    </form>
+	<div th:replace="common/header :: header"></div>
+	<div id="mainContents">
+	    <h3>ログイン</h3>
+	    <form method="POST" action="/">
+	    	<p th:if="${loginError}">ログインに失敗しました。もう一度ログインをやり直して下さい。</p>
+	    	ID:<input type="text" name="txtId" th:value="${id}" /><br/>
+	        Password:<input type="password" name="txtPassword" th:value="${password}" /><br/>
+	        <input type="submit" value="送信" />
+	    </form>
+    </div>
 </body>
 </html>

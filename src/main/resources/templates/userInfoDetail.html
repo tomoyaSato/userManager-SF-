@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="jp">
 <head>
-	<link rel="stylesheet" type="text/css" href="css/userList.css"/>
+	<title>ユーザ情報管理システム</title>
+	<meta charset="UTF-8"/>
+	<link rel="stylesheet" type="text/css" href="css/common.css"/>
+	<link rel="stylesheet" type="text/css" href="css/userInfoDetail.css"/>
 	<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
 	<script>
 		$(document).ready(function(){
@@ -11,21 +14,21 @@
 			});
 		});
 	</script>
-	<meta charset="UTF-8"/>
-	<title>ユーザ情報管理システム</title>
 </head>
 <body>
-	<form method="POST" name="logout" action="/logout">
-		<pre class="title" th:text="${title}">	</pre>
-		<input type="submit" value="ログアウト"/>
-	</form>
-	<form method="POST" name="useInfoDetailPost" action="/userInfoDetail">
-		ID:<input type="text" name="txtId" th:value="${id}" disabled="disabled" /><br/>
-        Password:<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/><br/>
-        <input type="checkbox" th:if="${showPasswordChangeCheckBox}" /><p th:if="${showPasswordChangeCheckBox}">Passwordを変更する</p>
-        ユーザー名:<input type="text" name="txtName" th:value="${name}" /><br/>
-        <input type="submit" name="backPage" value="戻る" />
-        <input type="submit" th:name="${submitButtonName}" th:value="${submitButtonValue}" />
-	</form>
+	<div th:replace="common/header :: header"></div>
+	<div id="mainContents">
+		<h3 class="title" th:text="${title}"></h3>
+		<form method="POST" name="useInfoDetailPost" action="/userInfoDetail">
+			ID:<input type="text" name="txtId" th:value="${id}" disabled="disabled" /><br/>
+	        Password:<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/><br/>
+	        <div th:if="${showPasswordChangeCheckBox}">
+	        	<input id="PasswordChangeCheckBox" type="checkbox" th:if="${showPasswordChangeCheckBox}" />Passwordを変更する
+	        </div>
+	        ユーザー名:<input type="text" name="txtName" th:value="${name}" /><br/>
+	        <input type="submit" name="backPage" value="戻る" />
+	        <input type="submit" th:name="${submitButtonName}" th:value="${submitButtonValue}" />
+		</form>
+	</div>
 </body>
 </html>

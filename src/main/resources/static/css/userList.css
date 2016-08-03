@@ -7,18 +7,13 @@ and open the template in the editor.
     Created on : 2016/07/11, 10:47:34
     Author     : sac
 */
-h3{
-    color: #6666ff;
-}
 
 table, td, th {
     border: 1px #6666ff solid;
     border-collapse: collapse;
 }
 
-.title{
-    font-size: large;
-}
+
 
 .errorMessage{
 	font-weight: bolder;

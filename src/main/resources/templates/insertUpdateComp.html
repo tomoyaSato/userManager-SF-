@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="jp">
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>ユーザ情報管理システム</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
 	</head>
 	<body>
-		<font class="title" th:text="${title}">	</font>
-		<font class="message" th:text="${message}">	</font>
-		ID:<font class="message" th:text="${message}">	</font>
-		<font class="message" th:text="${message}">	</font>
-		<form action="">
-			<input type="submit" value="一覧画面へ戻る" />
-		</form>
+		<div th:replace="common/header :: header"></div>
+		<div id="mainContents">
+			<pre class="title" th:text="${title}">	</pre>
+			<pre class="message" th:text="${message}">	</pre>
+			ID:<font class="message" th:text="${message}">	</font>
+			<font class="message" th:text="${message}">	</font>
+			<form action="">
+				<input type="submit" value="一覧画面へ戻る" />
+			</form>
+		</div>
 	</body>
 </html>
