@@ -16,11 +16,11 @@ table, td, th {
     border-collapse: collapse;
 }
 
-font.title{
+.title{
     font-size: large;
 }
 
-font.errorMessage{
+.errorMessage{
 	font-weight: bolder;
 	color: #FF0000;
 }

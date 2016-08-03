@@ -130,7 +130,10 @@ public class MainController {
 		insertUserInfo.delete_flg = false;
 		userInfoRepository.save(insertUserInfo);
 
-		return userListPostUpdate(String.valueOf(insertUserInfo.id),mv);
+		mv.setViewName("insertUpdateComp");
+		mv.addObject("title","登録完了");
+		mv.addObject("message","ユーザー登録が完了しました。");
+		return mv;
 	}
 
 	@RequestMapping(value = "/userInfoDetail", params = "update", method=RequestMethod.POST)

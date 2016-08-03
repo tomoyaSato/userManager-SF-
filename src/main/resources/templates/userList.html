@@ -13,10 +13,10 @@ $(document).ready(function(){
 </head>
 <body>
 	<form method="POST" name="logout" action="/logout">
-		<font class="title">ユーザー情報一覧</font>
+		<pre class="title">ユーザー情報一覧</pre>
 		<input type="submit" value="ログアウト"/>
 	</form>
-	<font class="errorMessage" th:text="${errorMessage}"></font>
+	<pre class="errorMessage" th:text="${errorMessage}"></pre>
 	<form method="POST" name="userListPost" action="/userListPost">
 		<table class="list">
 			<tr>
