@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -44,9 +43,10 @@ public class MainController {
         @RequestParam("txtPassword") String txtPassword,
         ModelAndView mv
     ) {
-		List<UserInfo> thisUserInfo = userInfoRepository.findByIdAndPassword(Integer.parseInt(txtId), txtPassword);
+		List<UserInfo> thisUserInfo = userInfoRepository
+				.findByIdAndPasswordAndDeleteFlg(Integer.parseInt(txtId), txtPassword,false);
 		if(thisUserInfo.size() > 0){
-			List<UserInfo> userInfoList = userInfoRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
+			List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlg(false);
 //			List<UserInfo> userInfoList = userInfoRepository.findAll();
 			mv.addObject("UserInfo", userInfoList);
 			mv.setViewName("userList");
@@ -71,7 +71,8 @@ public class MainController {
 
 	/** ユーザー情報一覧 **/
 	@RequestMapping(value = "/userListPost", params = "insert", method=RequestMethod.POST)
-	public ModelAndView userListPostInsert(@RequestParam("selectUser") String selectUserId,
+	public ModelAndView userListPostInsert(
+			@RequestParam("selectUser") String selectUserId,
 			ModelAndView mv){
 		mv.setViewName("userInfoDetail");
 		mv.addObject("title", "ユーザー情報登録");
@@ -83,7 +84,8 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/userListPost", params = "update", method=RequestMethod.POST)
-	public ModelAndView userListPostUpdate(@RequestParam("selectUser") String selectUserId,
+	public ModelAndView userListPostUpdate(
+			@RequestParam("selectUser") String selectUserId,
 			ModelAndView mv){
 		if(selectUserId.equals("")){
 			// ユーザー未選択時処理
@@ -102,16 +104,32 @@ public class MainController {
 		return mv;
 	}
 	@RequestMapping(value = "/userListPost", params = "delete", method=RequestMethod.POST)
-	public ModelAndView userListPostDelete(@RequestParam("selectUser") String selectUserId,
+	public ModelAndView userListPostDelete(
+			@RequestParam("selectUser") String selectUserId,
 			ModelAndView mv){
 
+		UserInfo updateUserInfo = new UserInfo();
+		List<UserInfo> thisUserInfo = userInfoRepository.findById(Integer.parseInt(selectUserId));
+
+		updateUserInfo = thisUserInfo.get(0);
+		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
+		updateUserInfo.update_timestamp = insertTimestamp;
+		updateUserInfo.deleteFlg = true;
+		userInfoRepository.save(updateUserInfo);
+
+		mv.addObject("title","削除完了");
+		mv.addObject("message","ユーザー情報の削除が完了しました。");
+
+		mv.addObject("id",updateUserInfo.id);
+		mv.addObject("name",updateUserInfo.name);
+		mv.setViewName("deleteComp");
 		return mv;
 	}
 
 	/** ユーザー情報詳細 **/
 	@RequestMapping(value = "/userInfoDetail", params = "backPage", method=RequestMethod.POST)
 	public ModelAndView backFromUFI(ModelAndView mv){
-		List<UserInfo> userInfoList = userInfoRepository.findAll(new Sort(Sort.Direction.ASC, "id"));
+		List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlg(false);
 		mv.addObject("UserInfo", userInfoList);
 		mv.setViewName("userList");
 		return mv;
@@ -128,7 +146,7 @@ public class MainController {
 		insertUserInfo.password = txtPassword;
 		insertUserInfo.create_timestamp = insertTimestamp;
 		insertUserInfo.update_timestamp = insertTimestamp;
-		insertUserInfo.delete_flg = false;
+		insertUserInfo.deleteFlg = false;
 		userInfoRepository.save(insertUserInfo);
 
 		mv.setViewName("insertUpdateComp");

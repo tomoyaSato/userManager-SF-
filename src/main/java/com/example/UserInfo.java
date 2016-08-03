@@ -34,7 +34,7 @@ public class UserInfo {
     protected Timestamp update_timestamp;
 
 	@Column(name="delete_flg")
-    protected boolean delete_flg;
+    protected boolean deleteFlg;
 	public int getId() {
 		return id;
 	}
@@ -75,25 +75,25 @@ public class UserInfo {
 		this.update_timestamp = update_timestamp;
 	}
 
-	public boolean isDelete_flg() {
-		return delete_flg;
+	public boolean isDeleteFlg() {
+		return deleteFlg;
 	}
 
-	public void setDelete_flg(boolean delete_flg) {
-		this.delete_flg = delete_flg;
+	public void setDelete_flg(boolean deleteFlg) {
+		this.deleteFlg = deleteFlg;
 	}
-	
+
     public UserInfo() {
     	super();
     }
 
-      public UserInfo(String password,String name, Timestamp create_timestamp,Timestamp update_timestamp,boolean delete_flg) {
+      public UserInfo(String password,String name, Timestamp create_timestamp,Timestamp update_timestamp,boolean deleteFlg) {
         super();
         this.password = password;
         this.name = name;
         this.create_timestamp = create_timestamp;
         this.update_timestamp = update_timestamp;
-        this.delete_flg = delete_flg;
+        this.deleteFlg = deleteFlg;
       }
 
       // for debug
@@ -101,5 +101,5 @@ public class UserInfo {
         return "[id:" + id + ", password:" + password + ", name:" + name + "]";
       }
 
-	
+
 }

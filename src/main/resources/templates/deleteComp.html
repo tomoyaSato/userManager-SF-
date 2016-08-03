@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="jp">
+	<head>
+		<title>ユーザ情報管理システム</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<link rel="stylesheet" type="text/css" href="css/common.css"/>
+	</head>
+	<body>
+		<div th:replace="common/header :: header"></div>
+		<div id="mainContents">
+			<h3 class="title" th:text="${title}">	</h3>
+			<pre class="message" th:text="${message}">	</pre>
+
+			<table>
+				<tr>
+					<td>ID:</td>
+					<td th:text="${id}"></td>
+				</tr>
+				<tr>
+					<td>ユーザー名:</td>
+					<td th:text="${name}"></td>
+				</tr>
+			</table>
+			<form method="POST" action="/insertUpdateComp">
+				<input type="submit" value="一覧画面へ戻る" />
+			</form>
+		</div>
+	</body>
+</html>
