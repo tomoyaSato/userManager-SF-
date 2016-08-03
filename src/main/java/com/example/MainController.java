@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
@@ -20,14 +19,14 @@ public class MainController {
 	@Autowired
     UserInfoRepository userInfoRepository;
 
-    @RequestMapping("/")
-    @ResponseBody
-    public String home() {
-        return "Hello, Spring Boot Sample Application!";
-    }
+//    @RequestMapping("/")
+//    @ResponseBody
+//    public String home() {
+//        return "Hello, Spring Boot Sample Application!";
+//    }
 
     /** ログイン **/
-	@RequestMapping(value="/login")
+	@RequestMapping(value="/")
     public ModelAndView login(ModelAndView mv)
     {
         mv.setViewName("login");
@@ -37,7 +36,7 @@ public class MainController {
         return mv;
     }
 
-	@RequestMapping(value="/login", method=RequestMethod.POST)
+	@RequestMapping(value="/", method=RequestMethod.POST)
     public ModelAndView indexPosted(
         @RequestParam("txtId") String txtId,
         @RequestParam("txtPassword") String txtPassword,
