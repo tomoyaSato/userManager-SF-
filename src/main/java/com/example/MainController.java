@@ -96,6 +96,7 @@ public class MainController {
 		mv.addObject("submitButtonName","update");
 		mv.addObject("submitButtonValue", "更新");
 		mv.addObject("showPasswordChangeCheckBox", true);
+		mv.addObject("isDisabledPassword", "disabled");
 		mv.addObject("id",thisUserInfo.get(0).id);
 		mv.addObject("name",thisUserInfo.get(0).name);
 		return mv;
@@ -132,7 +133,10 @@ public class MainController {
 
 		mv.setViewName("insertUpdateComp");
 		mv.addObject("title","登録完了");
-		mv.addObject("message","ユーザー登録が完了しました。");
+		mv.addObject("message","ユーザー情報の登録が完了しました。");
+
+		mv.addObject("id",insertUserInfo.id);
+		mv.addObject("name",insertUserInfo.name);
 		return mv;
 	}
 
@@ -141,19 +145,32 @@ public class MainController {
 			@RequestParam("txtId") String txtId,
 			@RequestParam("txtPassword") String txtPassword,
 	        @RequestParam("txtName") String txtName,
+	        @RequestParam("hiddenCheckboxChangePass") String hiddenCheckboxChangePass,
 	        ModelAndView mv){
-
-
 		UserInfo updateUserInfo = new UserInfo();
 		List<UserInfo> thisUserInfo = userInfoRepository.findById(Integer.parseInt(txtId));
 
 		updateUserInfo = thisUserInfo.get(0);
 		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
 		updateUserInfo.name = txtName;
-		updateUserInfo.password = txtPassword;
+		if(hiddenCheckboxChangePass.equals("on")){
+			updateUserInfo.password = txtPassword;
+		}
 		updateUserInfo.update_timestamp = insertTimestamp;
 		userInfoRepository.save(updateUserInfo);
 
-		return userListPostUpdate(String.valueOf(updateUserInfo.id),mv);
+		mv.setViewName("insertUpdateComp");
+		mv.addObject("title","更新完了");
+		mv.addObject("message","ユーザー情報の更新が完了しました。");
+
+		mv.addObject("id",updateUserInfo.id);
+		mv.addObject("name",updateUserInfo.name);
+		return mv;
+	}
+
+	/** ユーザー情報登録・更新完了**/
+	@RequestMapping(value = "/insertUpdateComp", method=RequestMethod.POST)
+	public ModelAndView backFrominsertUpdateComp(ModelAndView mv){
+		return backFromUFI(mv);
 	}
 }

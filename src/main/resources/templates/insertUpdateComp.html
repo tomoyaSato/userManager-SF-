@@ -8,11 +8,20 @@
 	<body>
 		<div th:replace="common/header :: header"></div>
 		<div id="mainContents">
-			<pre class="title" th:text="${title}">	</pre>
+			<h3 class="title" th:text="${title}">	</h3>
 			<pre class="message" th:text="${message}">	</pre>
-			ID:<font class="message" th:text="${message}">	</font>
-			<font class="message" th:text="${message}">	</font>
-			<form action="">
+
+			<table>
+				<tr>
+					<td>ID:</td>
+					<td th:text="${id}"></td>
+				</tr>
+				<tr>
+					<td>ユーザー名:</td>
+					<td th:text="${name}"></td>
+				</tr>
+			</table>
+			<form method="POST" action="/insertUpdateComp">
 				<input type="submit" value="一覧画面へ戻る" />
 			</form>
 		</div>

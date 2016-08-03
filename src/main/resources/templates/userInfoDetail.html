@@ -8,11 +8,24 @@
 	<script type="text/javascript" src="js/jquery-3.1.0.js"></script>
 	<script>
 		$(document).ready(function(){
+			// submit時のdisabled解除
 			$("form[name='useInfoDetailPost']").submit(function() {
 				$("input[name='txtId']").prop("disabled",false);
+				$("input[name='txtPassword']").prop("disabled",false);
 				return true;
 			});
+			// パスワードのチェックボックスクリック時にdisabledのオン・オフ処理
+			$("#passwordChangeCheckBox").change(function(){
+				if($(this).prop('checked')){
+					$("input[name='txtPassword']").prop("disabled",false);
+					$("input[name='hiddenCheckboxChangePass']").val("on");
+				}else{
+					$("input[name='txtPassword']").prop("disabled",true);
+					$("input[name='hiddenCheckboxChangePass']").val("off");
+				}
+			});
 		});
+
 	</script>
 </head>
 <body>
@@ -23,7 +36,8 @@
 			ID:<input type="text" name="txtId" th:value="${id}" disabled="disabled" /><br/>
 	        Password:<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/><br/>
 	        <div th:if="${showPasswordChangeCheckBox}">
-	        	<input id="PasswordChangeCheckBox" type="checkbox" th:if="${showPasswordChangeCheckBox}" />Passwordを変更する
+				<input type="hidden" name="hiddenCheckboxChangePass" value="off" />
+	        	<input id="passwordChangeCheckBox" name="checkboxChangePass" type="checkbox" th:if="${showPasswordChangeCheckBox}" value=""/>Passwordを変更する
 	        </div>
 	        ユーザー名:<input type="text" name="txtName" th:value="${name}" /><br/>
 	        <input type="submit" name="backPage" value="戻る" />
