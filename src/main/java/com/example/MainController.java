@@ -46,7 +46,7 @@ public class MainController {
 		List<UserInfo> thisUserInfo = userInfoRepository
 				.findByIdAndPasswordAndDeleteFlg(Integer.parseInt(txtId), txtPassword,false);
 		if(thisUserInfo.size() > 0){
-			List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlg(false);
+			List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlgOrderByIdAsc(false);
 //			List<UserInfo> userInfoList = userInfoRepository.findAll();
 			mv.addObject("UserInfo", userInfoList);
 			mv.setViewName("userList");
@@ -129,7 +129,7 @@ public class MainController {
 	/** ユーザー情報詳細 **/
 	@RequestMapping(value = "/userInfoDetail", params = "backPage", method=RequestMethod.POST)
 	public ModelAndView backFromUFI(ModelAndView mv){
-		List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlg(false);
+		List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlgOrderByIdAsc(false);
 		mv.addObject("UserInfo", userInfoList);
 		mv.setViewName("userList");
 		return mv;

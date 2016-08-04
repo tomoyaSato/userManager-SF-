@@ -9,5 +9,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo,Integer> {
 	public List<UserInfo> findByIdAndPasswordAndDeleteFlg(int id ,String password,boolean deleteFlg);
 	public List<UserInfo> findById(int id);
 	public List<UserInfo> findByName(String name);
-	public List<UserInfo> findByDeleteFlg(boolean deleteFlg);
+	public List<UserInfo> findByDeleteFlgOrderByIdAsc(boolean deleteFlg);
 }
