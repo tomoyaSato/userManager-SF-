@@ -1,4 +1,5 @@
-<html xmlns:th="http://www.thymeleaf.org" lang="jp">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:sec="http://www.thymeleaf.org./thymeleaf-extras-springsecurity3">
 <head>
     <title>ユーザー管理システム</title>
     <meta charset="UTF-8"/>
@@ -8,10 +9,10 @@
 	<div th:replace="common/header :: header"></div>
 	<div id="mainContents">
 	    <h3>ログイン</h3>
-	    <form method="POST" action="/">
+	    <form method="POST" th:action="@{/login}">
 	    	<p th:if="${loginError}">ログインに失敗しました。もう一度ログインをやり直して下さい。</p>
-	    	ID:<input type="text" name="txtId" th:value="${id}" /><br/>
-	        Password:<input type="password" name="txtPassword" th:value="${password}" /><br/>
+	    	ID:<input type="text" name="userid"  /><br/>
+	        Password:<input type="password" name="password" /><br/>
 	        <input type="submit" value="送信" />
 	    </form>
     </div>

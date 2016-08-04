@@ -25,14 +25,31 @@ public class MainController {
 //        return "Hello, Spring Boot Sample Application!";
 //    }
 
-    /** ログイン **/
 	@RequestMapping(value="/")
+	@ResponseBody
+	public ModelAndView home(ModelAndView mv){
+		mv.setViewName("home");
+		return mv;
+	}
+	@RequestMapping(value="/hello")
+	public ModelAndView hello(ModelAndView mv){
+		mv.setViewName("hello");
+		return mv;
+	}
+	@RequestMapping(value="/login_page")
+	public ModelAndView login_page(ModelAndView mv){
+		mv.setViewName("login_page");
+		return mv;
+	}
+
+    /** ログイン **/
+	@RequestMapping(value="/login")
 	@ResponseBody
     public ModelAndView login(ModelAndView mv)
     {
         mv.setViewName("login");
-        mv.addObject("id", "");
-        mv.addObject("password", "");
+//        mv.addObject("userId", "");
+//        mv.addObject("password", "");
         mv.addObject("loginError",false);
         return mv;
     }

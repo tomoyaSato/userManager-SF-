@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="jp">
+<head>
+<meta charset="UTF-8" />
+<title>Spring Security Example</title>
+</head>
+<body>
+	<form th:action="@{/login_page}" method="post">
+		<div>
+			<label>
+				ユーザ名:<input type="text" name="username" />
+			</label>
+		</div>
+		<div>
+			<label>
+				パスワード:<input type="password" name="password" />
+			</label>
+		</div>
+		<div>
+			<input type="submit" value="Sign In" />
+		</div>
+	</form>
+</body>
+</html>
