@@ -9,7 +9,7 @@
 	<div th:replace="common/header :: header"></div>
 	<div id="mainContents">
 	    <h3>ログイン</h3>
-	    <form method="POST" th:action="@{/login}">
+	    <form method="POST" th:action="@{/userList}">
 	    	<p th:if="${loginError}">ログインに失敗しました。もう一度ログインをやり直して下さい。</p>
 	    	ID:<input type="text" name="userid"  /><br/>
 	        Password:<input type="password" name="password" /><br/>

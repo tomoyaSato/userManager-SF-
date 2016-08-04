@@ -28,8 +28,10 @@ public class MainController {
 	@RequestMapping(value="/")
 	@ResponseBody
 	public ModelAndView home(ModelAndView mv){
-		mv.setViewName("home");
-		return mv;
+//		mv.setViewName("login");
+//		mv.addObject("loginError",false);
+//		return mv;
+		return indexPosted(mv);
 	}
 	@RequestMapping(value="/hello")
 	public ModelAndView hello(ModelAndView mv){
@@ -54,27 +56,27 @@ public class MainController {
         return mv;
     }
 
-	@RequestMapping(value="/", method=RequestMethod.POST)
+	@RequestMapping(value="/userList", method=RequestMethod.POST)
     public ModelAndView indexPosted(
-        @RequestParam("txtId") String txtId,
-        @RequestParam("txtPassword") String txtPassword,
+//        @RequestParam("txtId") String txtId,
+//        @RequestParam("txtPassword") String txtPassword,
         ModelAndView mv
     ) {
-		List<UserInfo> thisUserInfo = userInfoRepository
-				.findByIdAndPasswordAndDeleteFlg(Integer.parseInt(txtId), txtPassword,false);
-		if(thisUserInfo.size() > 0){
+//		List<UserInfo> thisUserInfo = userInfoRepository
+//				.findByIdAndPasswordAndDeleteFlg(Integer.parseInt(txtId), txtPassword,false);
+//		if(thisUserInfo.size() > 0){
 			List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlgOrderByIdAsc(false);
 //			List<UserInfo> userInfoList = userInfoRepository.findAll();
 			mv.addObject("UserInfo", userInfoList);
 			mv.setViewName("userList");
 			return mv;
-		}else{
-	        mv.setViewName("login");
-	        mv.addObject("id", txtId);
-	        mv.addObject("password", "");
-	        mv.addObject("loginError",true);
-	        return mv;
-		}
+//		}else{
+//	        mv.setViewName("login");
+//	        mv.addObject("id", txtId);
+//	        mv.addObject("password", "");
+//	        mv.addObject("loginError",true);
+//	        return mv;
+//		}
     }
 	@RequestMapping(value="/logout")
 	public ModelAndView logout(ModelAndView mv){
