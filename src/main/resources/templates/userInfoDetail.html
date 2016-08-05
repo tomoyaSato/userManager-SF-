@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:sec="http://www.thymeleaf.org./thymeleaf-extras-springsecurity3">g="jp">
+	  xmlns:sec="http://www.thymeleaf.org./thymeleaf-extras-springsecurity3">
 <head>
 	<title>ユーザ情報管理システム</title>
 	<meta charset="UTF-8"/>
@@ -11,7 +11,7 @@
 		$(document).ready(function(){
 			// submit時のdisabled解除
 			$("form[name='useInfoDetailPost']").submit(function() {
-				$("input[name='txtId']").prop("disabled",false);
+				$("input[name='txtUserId']").prop("disabled",false);
 				$("input[name='txtPassword']").prop("disabled",false);
 				return true;
 			});
@@ -33,16 +33,46 @@
 	<div th:replace="common/header :: header"></div>
 	<div id="mainContents">
 		<h3 class="title" th:text="${title}"></h3>
-		<form method="POST" name="useInfoDetailPost" action="/userInfoDetail">
-			ID:<input type="text" name="txtId" th:value="${id}" disabled="disabled" /><br/>
-	        Password:<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/><br/>
-	        <div th:if="${showPasswordChangeCheckBox}">
-				<input type="hidden" name="hiddenCheckboxChangePass" value="off" />
-	        	<input id="passwordChangeCheckBox" name="checkboxChangePass" type="checkbox" th:if="${showPasswordChangeCheckBox}" value=""/>Passwordを変更する
-	        </div>
-	        ユーザー名:<input type="text" name="txtName" th:value="${name}" /><br/>
-	        <input type="submit" name="backPage" value="戻る" />
-	        <input type="submit" th:name="${submitButtonName}" th:value="${submitButtonValue}" />
+		<form method="POST" name="useInfoDetailPost" th:action="@{/userInfoDetail}">
+			<table>
+				<tr>
+					<td>ID:</td>
+					<td>
+						<input type="text" name="txtUserId" th:value="${userId}" th:disabled="${isDisabledUserId}" />
+					</td>
+				</tr>
+				<tr>
+					<td>Password:</td>
+					<td>
+						<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/>
+						<div th:if="${showPasswordChangeCheckBox}">
+						<input type="hidden" name="hiddenCheckboxChangePass" value="off" />
+			        	<input id="passwordChangeCheckBox" name="checkboxChangePass" type="checkbox" th:if="${showPasswordChangeCheckBox}" value=""/>Passwordを変更する
+			        </div>
+					</td>
+				</tr>
+				<tr>
+					<td>ユーザー名:</td>
+					<td>
+						 <input type="text" name="txtName" th:value="${name}" />
+					</td>
+				</tr>
+				<tr>
+					<td>権限:</td>
+					<td>
+						<select name="authorities" size="1">
+							<option value="admin" th:selected="${adminSelected}">管理者</option>
+							<option value="user" th:selected="${userSelected}">一般ユーザー</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+					<input type="submit" name="backPage" value="戻る" />
+					<input type="submit" th:name="${submitButtonName}" th:value="${submitButtonValue}" />
+					</td>
+				</tr>
+			</table>
 		</form>
 	</div>
 </body>

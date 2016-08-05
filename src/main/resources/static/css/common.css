@@ -19,10 +19,15 @@ header{
 	color: #ffffff;
 	display: inline;
 }
-
-#logoutButton{
-	float:right;
-}
 #logoutForm{
 	margin: 0px;
+}
+
+#headerRight{
+	float:right;
+}
+.headerUserInfo{
+	color: #ffffff;
+	margin:0px;
+	display:inline;
 }

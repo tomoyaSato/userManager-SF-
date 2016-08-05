@@ -2,9 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="jp">
 	<body>
 		<header th:fragment="header">
-			<form id="logoutForm" method="POST" name="logout" action="/logout">
+			<form id="logoutForm" method="POST" name="logout" th:action="@{/logout}">
 				<p id="title">ユーザー管理システム</p>
-				<input id="logoutButton" type="submit" value="ログアウト"/>
+				<div id="headerRight">
+					<p class="headerUserInfo" th:text="${headerUserInfo}"></p>
+					<input id="logoutButton" th:if="${displayLogoutButton}" type="submit" value="ログアウト"/>
+				</div>
+
 			</form>
 		</header>
 	</body>

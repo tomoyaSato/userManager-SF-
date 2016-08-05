@@ -12,18 +12,20 @@
 	<div th:replace="common/header :: header"></div>
 	<div id="mainContents">
 		<h3>ユーザー情報一覧</h3>
-		<pre class="errorMessage" th:text="${errorMessage}"></pre>
-		<form method="POST" name="userListPost" action="/userListPost">
+		<p class="errorMessage" th:text="${errorMessage}"></p>
+		<form method="POST" name="userListPost" th:action="@{/userListPost}">
 			<table class="list">
 				<tr>
 					<th>選択</th>
 					<th>ID</th>
-					<th>氏名</th>
+					<th>ユーザー名</th>
+					<th>権限</th>
 				</tr>
 				<tr th:each="UserInfo:${UserInfo}">
-					<td><input type="radio" name="selectUser" th:value="${UserInfo.id}"/></td>
-					<td th:text="${UserInfo.id}">xx</td>
+					<td><input type="radio" name="selectUser" th:value="${UserInfo.userId}"/></td>
+					<td th:text="${UserInfo.userId}">xx</td>
 					<td th:text="${UserInfo.name}">name</td>
+					<td th:text="${UserInfo.Authority}"></td>
 				</tr>
 			</table>
 			<!-- ラジオボタン未選択時値が送信されない問題の対応 -->

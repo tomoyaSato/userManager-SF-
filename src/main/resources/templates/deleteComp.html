@@ -15,14 +15,14 @@
 			<table>
 				<tr>
 					<td>ID:</td>
-					<td th:text="${id}"></td>
+					<td th:text="${userId}"></td>
 				</tr>
 				<tr>
 					<td>ユーザー名:</td>
 					<td th:text="${name}"></td>
 				</tr>
 			</table>
-			<form method="POST" action="/insertUpdateComp">
+			<form method="POST" th:action="@{/insertUpdateComp}">
 				<input type="submit" value="一覧画面へ戻る" />
 			</form>
 		</div>
