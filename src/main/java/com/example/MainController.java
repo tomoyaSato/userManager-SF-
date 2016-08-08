@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -276,6 +278,16 @@ public class MainController {
 		mv.addObject("userId",thisUserInfo.userId);
 		mv.addObject("name",thisUserInfo.name);
 
+		// メイン部処理
+		UserInfo userInfo = new UserInfo();
+		userInfo.getAuthorities();
+		// ヘッダー部処理
+		headerUserInfo = getAuthorities(principal);
+		mv.addObject("headerUserInfo", headerUserInfo);
+		mv.addObject("displayLogoutButton", true);
+
+
+
 		return mv;
 	}
 
@@ -290,7 +302,16 @@ public class MainController {
 	// ユーザー情報から権限を取得する
 	private String getAuthorities(Principal principal){
 		// 引数のPrincipalに含まれているauthoritiesを取得する
+
 		String headerUserInfo = "";
+
+		String testStr = "";
+		Object principalTest = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		try{
+			testStr = ((UserDetails) principalTest).getUsername();
+		}catch(Exception Err){
+
+		}
 
 		// 名前の取得
 		String principalStr =  principal.toString();
