@@ -37,6 +37,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// ログイン設定
 		http.formLogin()
 		.loginPage("/login")
+//		.defaultSuccessUrl("/userList")
+//		.failureHandler(new MyAuthenticationFailureHandler())
 		.usernameParameter("userid")
 		.passwordParameter("password")
 		.permitAll();
@@ -65,4 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 
 		return authProvider;
 	}
+
 }
+
+

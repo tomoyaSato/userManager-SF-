@@ -11,6 +11,9 @@
 	    <h3>ログイン</h3>
 	    <form method="POST" th:action="@{/login}">
 	    	<p th:if="${loginError}">ログインに失敗しました。もう一度ログインをやり直して下さい。</p>
+	    	<div class="form-group" th:if="${session['SPRING_SECURITY_LAST_EXCEPTION']} != null">
+				<p class="form-control-static text-danger" th:text="${session['SPRING_SECURITY_LAST_EXCEPTION'].message}"></p>
+			</div>
 	    	ID:<input type="text" name="userid"  /><br/>
 	        Password:<input type="password" name="password" /><br/>
 	        <input type="submit" value="送信" />

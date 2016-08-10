@@ -38,11 +38,11 @@ public class UserInfo implements UserDetails {
 
 
     @Column(name="create_timestamp")
-    protected Timestamp create_timestamp;
+    protected Timestamp createTimestamp;
 
 
     @Column(name="update_timestamp")
-    protected Timestamp update_timestamp;
+    protected Timestamp updateTimestamp;
 
     @Size(max = 50)
     @Column(name="authority")
@@ -84,26 +84,26 @@ public class UserInfo implements UserDetails {
 	}
 
 	public Timestamp getCreate_timestamp() {
-		return create_timestamp;
+		return createTimestamp;
 	}
 
 	public void setCreate_timestamp(Timestamp create_timestamp) {
-		this.create_timestamp = create_timestamp;
+		this.createTimestamp = create_timestamp;
 	}
 
 	public Timestamp getUpdate_timestamp() {
-		return update_timestamp;
+		return updateTimestamp;
 	}
 
 	public void setUpdate_timestamp(Timestamp update_timestamp) {
-		this.update_timestamp = update_timestamp;
+		this.updateTimestamp = update_timestamp;
 	}
 
 	public String getAuthority() {
 		return authority;
 	}
 
-	public void setAuthority(String authority) {
+	public void setAuthority(String authority){
 		this.authority = authority;
 	}
 
@@ -114,17 +114,27 @@ public class UserInfo implements UserDetails {
 	public void setDelete_flg(boolean deleteFlg) {
 		this.deleteFlg = deleteFlg;
 	}
-
-    public UserInfo() {
+	public UserInfo(){
+		super();
+	}
+    public UserInfo(UserInfo userInfo) {
     	super();
+    	this.id 				= userInfo.getId();
+    	this.userId				= userInfo.getUserId();
+    	this.password			= userInfo.getPassword();
+    	this.name				= userInfo.getName();
+    	this.createTimestamp	= userInfo.getCreate_timestamp();
+    	this.updateTimestamp	= userInfo.getUpdate_timestamp();
+    	this.authority			= userInfo.getAuthority();
+    	this.deleteFlg			= userInfo.getDeleteFlg();
     }
 
       public UserInfo(String password,String name, Timestamp create_timestamp,Timestamp update_timestamp,boolean deleteFlg) {
         super();
         this.password = password;
         this.name = name;
-        this.create_timestamp = create_timestamp;
-        this.update_timestamp = update_timestamp;
+        this.createTimestamp = create_timestamp;
+        this.updateTimestamp = update_timestamp;
         this.deleteFlg = deleteFlg;
       }
 

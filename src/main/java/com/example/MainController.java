@@ -2,12 +2,12 @@ package com.example;
 
 import java.security.Principal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,12 +32,11 @@ public class MainController {
 	@RequestMapping(value="/")
 	@ResponseBody
 	public ModelAndView home(
-			Principal principal,
 			ModelAndView mv){
 		mv.setViewName("login");
 //		mv.addObject("loginError",false);
 //		return mv;
-		return indexPosted(principal,mv);
+		return indexPosted(mv);
 	}
 
     /** ログイン **/
@@ -58,27 +57,31 @@ public class MainController {
     public ModelAndView indexPosted(
 //        @RequestParam("txtId") String txtId,
 //        @RequestParam("txtPassword") String txtPassword,
-    		Principal principal,
     		ModelAndView mv
     ) {
 //		List<UserInfo> thisUserInfo = userInfoRepository
 //				.findByIdAndPasswordAndDeleteFlg(Integer.parseInt(txtId), txtPassword,false);
 //		if(thisUserInfo.size() > 0){
-			List<UserInfo> userInfoList = userInfoRepository.findByDeleteFlgOrderByIdAsc(false);
-//			List<UserInfo> userInfoList = userInfoRepository.findAll();
-			for(int i = 0;i < userInfoList.size();i++){
-				if(userInfoList.get(i).getAuthority().equals("ROLE_ADMIN")){
-					userInfoList.get(i).setAuthority("管理者");
-				}else if(userInfoList.get(i).getAuthority().equals("ROLE_USER")){
-					userInfoList.get(i).setAuthority("一般ユーザー");
-				}
+		List<UserInfo> userInfoList = new ArrayList<UserInfo>();
+		userInfoList = new ArrayList<UserInfo>(userInfoRepository.findByDeleteFlgOrderByIdAsc(false));
+//		List<UserInfo> userInfoList = userInfoRepository.findAll();
+		for(int i = 0;i < userInfoList.size();i++){
+			UserInfo userinfo = new UserInfo(userInfoList.get(i));
+			if(userinfo.getAuthority().equals("ROLE_ADMIN")){
+//				userInfoList.get(i).setAuthority("管理者");
+				userinfo.setAuthority("管理者");
+			}else if(userinfo.getAuthority().equals("ROLE_USER")){
+//				userInfoList.get(i).setAuthority("一般ユーザー");
+				userinfo.setAuthority("一般ユーザー");
 			}
-			String headerUserInfo = getAuthorities(principal);
-			mv.addObject("headerUserInfo", headerUserInfo);
-			mv.addObject("displayLogoutButton", true);
-			mv.addObject("UserInfo", userInfoList);
-			mv.setViewName("userList");
-			return mv;
+			userInfoList.set(i, userinfo);
+		}
+		String headerUserInfo = getAuthorities();
+		mv.addObject("headerUserInfo", headerUserInfo);
+		mv.addObject("displayLogoutButton", true);
+		mv.addObject("UserInfo", userInfoList);
+		mv.setViewName("userList");
+		return mv;
 //		}else{
 //	        mv.setViewName("login");
 //	        mv.addObject("id", txtId);
@@ -106,7 +109,7 @@ public class MainController {
 			Principal principal,
 			ModelAndView mv){
 		// ヘッダー部処理
-		String headerUserInfo = getAuthorities(principal);
+		String headerUserInfo = getAuthorities();
 		mv.addObject("headerUserInfo", headerUserInfo);
 		mv.addObject("displayLogoutButton", true);
 
@@ -134,7 +137,7 @@ public class MainController {
 			return backFromUFI(principal,mv);
 		}
 		// ヘッダー部処理
-		String headerUserInfo = getAuthorities(principal);
+		String headerUserInfo = getAuthorities();
 		mv.addObject("headerUserInfo", headerUserInfo);
 		mv.addObject("displayLogoutButton", true);
 
@@ -172,13 +175,13 @@ public class MainController {
 			return backFromUFI(principal,mv);
 		}
 		// ヘッダー部処理
-		String headerUserInfo = getAuthorities(principal);
+		String headerUserInfo = getAuthorities();
 		mv.addObject("headerUserInfo", headerUserInfo);
 		mv.addObject("displayLogoutButton", true);
 
 		// マイン部処理
-		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
-		thisUserInfo.update_timestamp = insertTimestamp;
+		Timestamp updateTimestamp = new Timestamp(System.currentTimeMillis());
+		thisUserInfo.updateTimestamp = updateTimestamp;
 		thisUserInfo.deleteFlg = true;
 		userInfoRepository.save(thisUserInfo);
 
@@ -196,7 +199,7 @@ public class MainController {
 	public ModelAndView backFromUFI(
 			Principal principal,
 			ModelAndView mv){
-		return indexPosted(principal,mv);
+		return indexPosted(mv);
 	}
 
 	@RequestMapping(value = "/userInfoDetail", params = "insert", method=RequestMethod.POST)
@@ -208,7 +211,7 @@ public class MainController {
 	        Principal principal,
 	        ModelAndView mv){
 		// ヘッダー部処理
-		String headerUserInfo = getAuthorities(principal);
+		String headerUserInfo = getAuthorities();
 		mv.addObject("headerUserInfo", headerUserInfo);
 		mv.addObject("displayLogoutButton", true);
 
@@ -225,8 +228,8 @@ public class MainController {
 		}else if(authorities.equals("user")){
 			insertUserInfo.authority = "ROLE_USER";
 		}
-		insertUserInfo.create_timestamp = insertTimestamp;
-		insertUserInfo.update_timestamp = insertTimestamp;
+		insertUserInfo.createTimestamp = insertTimestamp;
+		insertUserInfo.updateTimestamp = insertTimestamp;
 		insertUserInfo.deleteFlg = false;
 		userInfoRepository.save(insertUserInfo);
 
@@ -248,12 +251,9 @@ public class MainController {
 	        @RequestParam("authorities") String authorities,
 	        Principal principal,
 	        ModelAndView mv){
-		// ヘッダー部処理
-		String headerUserInfo = getAuthorities(principal);
-		mv.addObject("headerUserInfo", headerUserInfo);
-		mv.addObject("displayLogoutButton", true);
 
-		// メイン部処理
+
+
 		UserInfo thisUserInfo = userInfoRepository.findByUserId(txtUserId);
 
 		Timestamp updateTimestamp = new Timestamp(System.currentTimeMillis());
@@ -268,25 +268,21 @@ public class MainController {
 		}else if(authorities.equals("user")){
 			thisUserInfo.authority = "ROLE_USER";
 		}
-		thisUserInfo.update_timestamp = updateTimestamp;
+		thisUserInfo.updateTimestamp = updateTimestamp;
 		userInfoRepository.save(thisUserInfo);
 
+		// ヘッダー部処理
+		String headerUserInfo = getAuthorities();
+		mv.addObject("headerUserInfo", headerUserInfo);
+		mv.addObject("displayLogoutButton", true);
+
+		// メイン部処理
 		mv.setViewName("insertUpdateComp");
 		mv.addObject("title","更新完了");
 		mv.addObject("message","ユーザー情報の更新が完了しました。");
 
 		mv.addObject("userId",thisUserInfo.userId);
 		mv.addObject("name",thisUserInfo.name);
-
-		// メイン部処理
-		UserInfo userInfo = new UserInfo();
-		userInfo.getAuthorities();
-		// ヘッダー部処理
-		headerUserInfo = getAuthorities(principal);
-		mv.addObject("headerUserInfo", headerUserInfo);
-		mv.addObject("displayLogoutButton", true);
-
-
 
 		return mv;
 	}
@@ -300,52 +296,37 @@ public class MainController {
 	}
 
 	// ユーザー情報から権限を取得する
-	private String getAuthorities(Principal principal){
+	private String getAuthorities(){
 		// 引数のPrincipalに含まれているauthoritiesを取得する
+		UserInfo sessionUserInfo = (UserInfo)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		// ユーザー情報をDBから取得する
+		UserInfo dbUserInfo = userInfoRepository.findByIdAndDeleteFlg(sessionUserInfo.getId(),false);
+
+		// DBとセッションでユーザー情報に差異が有る場合は、DBに合わせセッション側を変更する
+		// ユーザー名
+		if(!sessionUserInfo.getName().equals(dbUserInfo.getName())){
+			sessionUserInfo.setName(dbUserInfo.getName());
+		}
+		// パスワード
+		if(!sessionUserInfo.getPassword().equals(dbUserInfo.getPassword())){
+			sessionUserInfo.setPassword(dbUserInfo.getPassword());
+		}
+		// 権限
+		if(!sessionUserInfo.getAuthority().equals(dbUserInfo.getAuthority())){
+			sessionUserInfo.setAuthority(dbUserInfo.getAuthority());
+		}
+		// 削除フラグ
+		if(!sessionUserInfo.getDeleteFlg() == dbUserInfo.getDeleteFlg()){
+			sessionUserInfo.setDelete_flg(dbUserInfo.getDeleteFlg());
+		}
 
 		String headerUserInfo = "";
 
-		String testStr = "";
-		Object principalTest = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		try{
-			testStr = ((UserDetails) principalTest).getUsername();
-		}catch(Exception Err){
-
-		}
-
-		// 名前の取得
-		String principalStr =  principal.toString();
-		int startIndex = principalStr.indexOf("Principal: ");
-		startIndex += "Principal: [".length();
-		principalStr = principalStr.substring(startIndex);
-		int endIndex = principalStr.indexOf("];");
-		principalStr = principalStr.substring(0,endIndex);
-		String[] principalArray = principalStr.split(",");
-		String name = "";
-		for(String splitedPrincial:principalArray){
-			String[] attribute = splitedPrincial.split(":");
-			if(attribute[0].trim().equals("name")){
-				name = attribute[1].trim();
-				break;
-			}
-		}
-
-		// 権限の取得
-		principalArray = principal.toString().split(";");
-		String authorities = null;
-		for(String splitedPrincial:principalArray){
-			String[] attribute = splitedPrincial.split(":");
-			if(attribute[0].trim().equals("Granted Authorities")){
-				authorities = attribute[1].trim();
-				break;
-			}
-		}
-
-		// 取得したauthoritiesによって出力する権限を変更する
-		if(authorities.equals("ROLE_ADMIN")){
-			headerUserInfo += "管理者：" + name;
-		}else if(authorities.equals("ROLE_USER")){
-			headerUserInfo += "一般ユーザー：" + name;
+		// 取得したauthoritiesによってヘッダー部に出力する情報を変更する
+		if(sessionUserInfo.getAuthority().equals("ROLE_ADMIN")){
+			headerUserInfo += "管理者：" + sessionUserInfo.getName();
+		}else if(sessionUserInfo.getAuthority().equals("ROLE_USER")){
+			headerUserInfo += "一般ユーザー：" + sessionUserInfo.getName();
 		}
 
 		return headerUserInfo;
