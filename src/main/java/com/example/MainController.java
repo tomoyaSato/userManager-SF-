@@ -10,6 +10,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +25,11 @@ public class MainController {
 
 	@Autowired
     UserInfoRepository userInfoRepository;
+
+	@ModelAttribute
+	public UserInfo userInfo(){
+		return new UserInfo();
+	}
 
 //    @RequestMapping("/")
 //    @ResponseBody
@@ -44,8 +52,7 @@ public class MainController {
 	@ResponseBody
     public ModelAndView login(
     		Principal principal,
-    		ModelAndView mv)
-    {
+    		ModelAndView mv){
         mv.setViewName("login");
 //        mv.addObject("userId", "");
 //        mv.addObject("password", "");
@@ -90,13 +97,13 @@ public class MainController {
 //	        return mv;
 //		}
     }
-	@RequestMapping(value="/logout")
-	public ModelAndView logout(
-			Principal principal,
-			ModelAndView mv){
-		mv.setViewName("login");
-		return mv;
-	}
+//	@RequestMapping(value="/logout")
+//	public ModelAndView logout(
+//			Principal principal,
+//			ModelAndView mv){
+//		mv.setViewName("logout");
+//		return mv;
+//	}
 	@RequestMapping(value = "/admin/index", method = RequestMethod.GET)
     public String menu() {
         return "index";
@@ -105,7 +112,6 @@ public class MainController {
 	/** ユーザー情報一覧 **/
 	@RequestMapping(value = "/userListPost", params = "insert", method=RequestMethod.POST)
 	public ModelAndView userListPostInsert(
-			@RequestParam("selectUser") String selectUserId,
 			Principal principal,
 			ModelAndView mv){
 		// ヘッダー部処理
@@ -128,10 +134,11 @@ public class MainController {
 
 	@RequestMapping(value = "/userListPost", params = "update", method=RequestMethod.POST)
 	public ModelAndView userListPostUpdate(
-			@RequestParam("selectUser") String selectUserId,
+			@RequestParam("selectUser") String selectId,
+			UserInfo userinfo,
 			Principal principal,
 			ModelAndView mv){
-		if(selectUserId.equals("")){
+		if(selectId.equals("")){
 			// ユーザー未選択時処理
 			mv.addObject("errorMessage", "ユーザーが未選択です。");
 			return backFromUFI(principal,mv);
@@ -142,7 +149,7 @@ public class MainController {
 		mv.addObject("displayLogoutButton", true);
 
 		// メイン部処理
-		UserInfo thisUserInfo = userInfoRepository.findByUserId(selectUserId);
+		UserInfo thisUserInfo = userInfoRepository.findById(Integer.parseInt(selectId));
 		mv.setViewName("userInfoDetail");
 		mv.addObject("title", "ユーザー情報更新");
 		mv.addObject("submitButtonName","update");
@@ -150,8 +157,9 @@ public class MainController {
 		mv.addObject("showPasswordChangeCheckBox", true);
 		mv.addObject("isDisabledUserId", "disabled");
 		mv.addObject("isDisabledPassword", "disabled");
-		mv.addObject("userId",thisUserInfo.userId);
-		mv.addObject("name",thisUserInfo.name);
+		mv.addObject("id",thisUserInfo.id);
+		userinfo.setUserId(thisUserInfo.getUserId());
+		userinfo.setName(thisUserInfo.getName());
 
 		// 権限
 		if(thisUserInfo.getAuthority().equals("ROLE_ADMIN")){
@@ -164,11 +172,11 @@ public class MainController {
 	}
 	@RequestMapping(value = "/userListPost", params = "delete", method=RequestMethod.POST)
 	public ModelAndView userListPostDelete(
-			@RequestParam("selectUser") String selectUserId,
+			@RequestParam("selectUser") String selectId,
 			Principal principal,
 			ModelAndView mv){
 
-		UserInfo thisUserInfo = userInfoRepository.findByUserId(selectUserId);
+		UserInfo thisUserInfo = userInfoRepository.findById(Integer.valueOf(selectId));
 		if(thisUserInfo.getId() == 1){
 			// 初期登録ユーザー削除エラー
 			mv.addObject("errorMessage", "初期登録ユーザーは削除できません。");
@@ -204,10 +212,9 @@ public class MainController {
 
 	@RequestMapping(value = "/userInfoDetail", params = "insert", method=RequestMethod.POST)
 	public ModelAndView userInfoInsert(
-			@RequestParam("txtUserId") String txtUserId,
-			@RequestParam("txtPassword") String txtPassword,
-	        @RequestParam("txtName") String txtName,
 	        @RequestParam("authorities") String authorities,
+	        @Validated UserInfo insertUserInfo,
+	        Errors errors,
 	        Principal principal,
 	        ModelAndView mv){
 		// ヘッダー部処理
@@ -216,12 +223,15 @@ public class MainController {
 		mv.addObject("displayLogoutButton", true);
 
 		// メイン部処理
-		UserInfo insertUserInfo = new UserInfo();
+		if(errors.hasErrors()){
+			// バリデートエラー処理
+			return userListPostInsert(principal, mv);
+		}
+//		UserInfo insertUserInfo = new UserInfo();
 		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
 		// パスワードのハッシュ化
-		String hashedPass = BCrypt.hashpw(txtPassword, BCrypt.gensalt());
-		insertUserInfo.userId = txtUserId;
-		insertUserInfo.name = txtName;
+		String hashedPass = BCrypt.hashpw(insertUserInfo.getPassword(), BCrypt.gensalt());
+//		insertUserInfo.userId = txtUserId;
 		insertUserInfo.password = hashedPass;
 		if(authorities.equals("admin")){
 			insertUserInfo.authority = "ROLE_ADMIN";
@@ -244,23 +254,26 @@ public class MainController {
 
 	@RequestMapping(value = "/userInfoDetail", params = "update", method=RequestMethod.POST)
 	public ModelAndView userInfoUpdate(
-			@RequestParam("txtUserId") String txtUserId,
-			@RequestParam("txtPassword") String txtPassword,
-	        @RequestParam("txtName") String txtName,
+			@RequestParam("txtId") String txtId,
 	        @RequestParam("hiddenCheckboxChangePass") String hiddenCheckboxChangePass,
 	        @RequestParam("authorities") String authorities,
+	        @Validated UserInfo paramUserInfo,
+	        Errors errors,
 	        Principal principal,
 	        ModelAndView mv){
 
+		if(errors.hasErrors()){
+			// バリデートエラー処理
+			return userListPostUpdate(txtId,paramUserInfo,principal, mv);
+		}
 
-
-		UserInfo thisUserInfo = userInfoRepository.findByUserId(txtUserId);
+		UserInfo thisUserInfo = userInfoRepository.findByUserId(paramUserInfo.getUserId());
 
 		Timestamp updateTimestamp = new Timestamp(System.currentTimeMillis());
-		thisUserInfo.name = txtName;
+		thisUserInfo.name = paramUserInfo.getName();
 		if(hiddenCheckboxChangePass.equals("on")){
 			// パスワードのハッシュ化
-			String hashedPass = BCrypt.hashpw(txtPassword, BCrypt.gensalt());
+			String hashedPass = BCrypt.hashpw(paramUserInfo.getPassword(), BCrypt.gensalt());
 			thisUserInfo.password = hashedPass;
 		}
 		if(authorities.equals("admin")){

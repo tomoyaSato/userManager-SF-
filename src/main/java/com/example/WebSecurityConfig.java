@@ -38,7 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		http.formLogin()
 		.loginPage("/login")
 //		.defaultSuccessUrl("/userList")
-//		.failureHandler(new MyAuthenticationFailureHandler())
+//		.failureHandler(new OriginalAuthenticationFailureHandle())
 		.usernameParameter("userid")
 		.passwordParameter("password")
 		.permitAll();
@@ -46,7 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// ログアウト設定
 		http.logout()
 		.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-		.logoutSuccessUrl("/login");
+//		.logoutUrl("/logout")
+		.logoutSuccessUrl("/login")
+		.invalidateHttpSession(true);
 	}
 	@Override
  	protected void configure(AuthenticationManagerBuilder auth) throws Exception {

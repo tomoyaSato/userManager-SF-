@@ -22,7 +22,7 @@
 					<th>権限</th>
 				</tr>
 				<tr th:each="UserInfo:${UserInfo}">
-					<td><input type="radio" name="selectUser" th:value="${UserInfo.userId}"/></td>
+					<td><input type="radio" name="selectUser" th:value="${UserInfo.id}"/></td>
 					<td th:text="${UserInfo.userId}">xx</td>
 					<td th:text="${UserInfo.name}">name</td>
 					<td th:text="${UserInfo.Authority}"></td>

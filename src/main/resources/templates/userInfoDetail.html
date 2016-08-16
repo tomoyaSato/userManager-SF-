@@ -11,17 +11,17 @@
 		$(document).ready(function(){
 			// submit時のdisabled解除
 			$("form[name='useInfoDetailPost']").submit(function() {
-				$("input[name='txtUserId']").prop("disabled",false);
-				$("input[name='txtPassword']").prop("disabled",false);
+				$("input[name='userId']").prop("disabled",false);
+				$("input[name='password']").prop("disabled",false);
 				return true;
 			});
 			// パスワードのチェックボックスクリック時にdisabledのオン・オフ処理
 			$("#passwordChangeCheckBox").change(function(){
 				if($(this).prop('checked')){
-					$("input[name='txtPassword']").prop("disabled",false);
+					$("input[name='password']").prop("disabled",false);
 					$("input[name='hiddenCheckboxChangePass']").val("on");
 				}else{
-					$("input[name='txtPassword']").prop("disabled",true);
+					$("input[name='password']").prop("disabled",true);
 					$("input[name='hiddenCheckboxChangePass']").val("off");
 				}
 			});
@@ -33,18 +33,25 @@
 	<div th:replace="common/header :: header"></div>
 	<div id="mainContents">
 		<h3 class="title" th:text="${title}"></h3>
-		<form method="POST" name="useInfoDetailPost" th:action="@{/userInfoDetail}">
+		<form method="POST" name="useInfoDetailPost"  th:action="@{/userInfoDetail}">
 			<table>
 				<tr>
 					<td>ID:</td>
 					<td>
-						<input type="text" name="txtUserId" th:value="${userId}" th:disabled="${isDisabledUserId}" />
+					<input type="hidden" name="txtId" th:value="${id}" />
+					<input type="text" name="userId" th:disabled="${isDisabledUserId}"
+						th:field="*{userInfo.userId}"/>
+						<span th:if="${#fields.hasErrors('*{userInfo.userId}')}"
+							th:errors="*{userInfo.userId}" style="color:red" ></span>
 					</td>
 				</tr>
 				<tr>
 					<td>Password:</td>
 					<td>
-						<input type="password" name="txtPassword" th:value="${password}" th:disabled="${isDisabledPassword}"/>
+						<input type="password" name="password" th:disabled="${isDisabledPassword}"
+							th:field="*{userInfo.password}"/>
+							<span th:if="${#fields.hasErrors('*{userInfo.password}')}"
+							th:errors="*{userInfo.password}" style="color:red" ></span>
 						<div th:if="${showPasswordChangeCheckBox}">
 						<input type="hidden" name="hiddenCheckboxChangePass" value="off" />
 			        	<input id="passwordChangeCheckBox" name="checkboxChangePass" type="checkbox" th:if="${showPasswordChangeCheckBox}" value=""/>Passwordを変更する
@@ -54,7 +61,9 @@
 				<tr>
 					<td>ユーザー名:</td>
 					<td>
-						 <input type="text" name="txtName" th:value="${name}" />
+						 <input type="text" name="name" th:field="*{userInfo.name}"/>
+						 <span th:if="${#fields.hasErrors('*{userInfo.name}')}"
+							th:errors="*{userInfo.name}" style="color:red" ></span>
 					</td>
 				</tr>
 				<tr>

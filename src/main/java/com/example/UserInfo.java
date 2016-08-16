@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -24,14 +25,17 @@ public class UserInfo implements UserDetails {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	protected int id;
 
+	@NotNull
 	@Size(max = 50)
 	@Column(name="user_id" ,nullable = false)
 	protected String userId;
 
-	@Size(max = 60)
+	@NotNull
+	@Size(min = 8 ,max = 60)
 	@Column(name="password")
     protected String password;
 
+	@NotNull
 	@Size(max = 32)
 	@Column(name="name")
     protected String name;
