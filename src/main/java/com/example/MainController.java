@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.validate.order.ValidateOrder;
 
 @Controller
 @EnableAutoConfiguration
@@ -27,8 +30,8 @@ public class MainController {
     UserInfoRepository userInfoRepository;
 
 	@ModelAttribute
-	public UserInfo userInfo(){
-		return new UserInfo();
+	public UserInfoDetailFormCheck userInfoDetailFormCheck(){
+		return new UserInfoDetailFormCheck();
 	}
 
 //    @RequestMapping("/")
@@ -135,7 +138,7 @@ public class MainController {
 	@RequestMapping(value = "/userListPost", params = "update", method=RequestMethod.POST)
 	public ModelAndView userListPostUpdate(
 			@RequestParam("selectUser") String selectId,
-			UserInfo userinfo,
+			UserInfoDetailFormCheck userInfoDetailFormCheck,
 			Principal principal,
 			ModelAndView mv){
 		if(selectId.equals("")){
@@ -158,8 +161,8 @@ public class MainController {
 		mv.addObject("isDisabledUserId", "disabled");
 		mv.addObject("isDisabledPassword", "disabled");
 		mv.addObject("id",thisUserInfo.id);
-		userinfo.setUserId(thisUserInfo.getUserId());
-		userinfo.setName(thisUserInfo.getName());
+		userInfoDetailFormCheck.setUserId(thisUserInfo.getUserId());
+		userInfoDetailFormCheck.setName(thisUserInfo.getName());
 
 		// 権限
 		if(thisUserInfo.getAuthority().equals("ROLE_ADMIN")){
@@ -213,7 +216,7 @@ public class MainController {
 	@RequestMapping(value = "/userInfoDetail", params = "insert", method=RequestMethod.POST)
 	public ModelAndView userInfoInsert(
 	        @RequestParam("authorities") String authorities,
-	        @Validated UserInfo insertUserInfo,
+	        @Validated(ValidateOrder.class) UserInfoDetailFormCheck userInfoDetailFormCheck,
 	        Errors errors,
 	        Principal principal,
 	        ModelAndView mv){
@@ -227,18 +230,21 @@ public class MainController {
 			// バリデートエラー処理
 			return userListPostInsert(principal, mv);
 		}
-//		UserInfo insertUserInfo = new UserInfo();
+		UserInfo insertUserInfo = new UserInfo();
 		Timestamp insertTimestamp = new Timestamp(System.currentTimeMillis());
+
+		insertUserInfo.userId = userInfoDetailFormCheck.getUserId();
 		// パスワードのハッシュ化
-		String hashedPass = BCrypt.hashpw(insertUserInfo.getPassword(), BCrypt.gensalt());
-//		insertUserInfo.userId = txtUserId;
-		insertUserInfo.password = hashedPass;
+		String hashedPass = BCrypt.hashpw(userInfoDetailFormCheck.getPassword(), BCrypt.gensalt());
+
+		insertUserInfo.setPassword(hashedPass);
+		insertUserInfo.setName(userInfoDetailFormCheck.getName());
 		if(authorities.equals("admin")){
 			insertUserInfo.authority = "ROLE_ADMIN";
 		}else if(authorities.equals("user")){
 			insertUserInfo.authority = "ROLE_USER";
 		}
-		insertUserInfo.createTimestamp = insertTimestamp;
+		insertUserInfo.setCreateTimestamp(insertTimestamp);
 		insertUserInfo.updateTimestamp = insertTimestamp;
 		insertUserInfo.deleteFlg = false;
 		userInfoRepository.save(insertUserInfo);
@@ -257,24 +263,25 @@ public class MainController {
 			@RequestParam("txtId") String txtId,
 	        @RequestParam("hiddenCheckboxChangePass") String hiddenCheckboxChangePass,
 	        @RequestParam("authorities") String authorities,
-	        @Validated UserInfo paramUserInfo,
+	        @Validated(ValidateOrder.class) UserInfoDetailFormCheck userInfoDetailFormCheck,
 	        Errors errors,
 	        Principal principal,
 	        ModelAndView mv){
 
-		if(errors.hasErrors()){
-			// バリデートエラー処理
-			return userListPostUpdate(txtId,paramUserInfo,principal, mv);
+		// バリデートエラー処理
+		// パスワード未変更の場合はパスワードのチェック処理をしない
+		if(isErrCheck(errors,hiddenCheckboxChangePass)){
+			return userListPostUpdate(txtId,userInfoDetailFormCheck,principal, mv);
 		}
 
-		UserInfo thisUserInfo = userInfoRepository.findByUserId(paramUserInfo.getUserId());
+		UserInfo thisUserInfo = userInfoRepository.findByUserId(userInfoDetailFormCheck.getUserId());
 
 		Timestamp updateTimestamp = new Timestamp(System.currentTimeMillis());
-		thisUserInfo.name = paramUserInfo.getName();
+		thisUserInfo.setName(userInfoDetailFormCheck.getName()) ;
 		if(hiddenCheckboxChangePass.equals("on")){
 			// パスワードのハッシュ化
-			String hashedPass = BCrypt.hashpw(paramUserInfo.getPassword(), BCrypt.gensalt());
-			thisUserInfo.password = hashedPass;
+			String hashedPass = BCrypt.hashpw(userInfoDetailFormCheck.getPassword(), BCrypt.gensalt());
+			thisUserInfo.setPassword(hashedPass);
 		}
 		if(authorities.equals("admin")){
 			thisUserInfo.authority = "ROLE_ADMIN";
@@ -343,5 +350,25 @@ public class MainController {
 		}
 
 		return headerUserInfo;
+	}
+
+	// エラー時にtrueを返す
+	private boolean isErrCheck(Errors errors, String hiddenCheckboxChangePass){
+		if(errors.hasErrors() == false){
+			// そもそもエラーがない
+			return false;
+		}
+		if(hiddenCheckboxChangePass.equals("off")){
+			// パスワード変更のチェックが付いていない
+			for(FieldError fielderror: errors.getFieldErrors()){
+				if(fielderror.getField().equals("password") == false){
+					// パスワード以外のエラーが有る
+					return true;
+				}
+			}
+			// パスワードにしかエラーがない
+			return false;
+		}
+		return true;
 	}
 }

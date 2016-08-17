@@ -1,19 +1,27 @@
 package com.example;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.validate.HalfWidth;
+import com.validate.order.First;
+import com.validate.order.Second;
+import com.validate.order.Third;
+
 public class UserInfoDetailFormCheck {
-	@NotNull
-	@Size(max = 50)
+	@NotBlank(groups = First.class)
+	@Size(max = 50,groups = Second.class)
+	@HalfWidth(groups = Third.class)
 	protected String userId;
 
-	@NotNull
-	@Size(max = 60)
+	@NotBlank(groups = First.class)
+	@Size(min = 8 ,max = 60, groups = Second.class)
+	@HalfWidth(groups = Third.class)
     protected String password;
 
-	@NotNull
-	@Size(max = 32)
+	@NotBlank(groups = First.class)
+	@Size(max = 32,groups = Second.class)
     protected String name;
 
 	public String getUserId() {

@@ -87,20 +87,20 @@ public class UserInfo implements UserDetails {
 		this.name = name;
 	}
 
-	public Timestamp getCreate_timestamp() {
+	public Timestamp getCreateTimestamp() {
 		return createTimestamp;
 	}
 
-	public void setCreate_timestamp(Timestamp create_timestamp) {
-		this.createTimestamp = create_timestamp;
+	public void setCreateTimestamp(Timestamp createTimestamp) {
+		this.createTimestamp = createTimestamp;
 	}
 
-	public Timestamp getUpdate_timestamp() {
+	public Timestamp getUpdateTimestamp() {
 		return updateTimestamp;
 	}
 
-	public void setUpdate_timestamp(Timestamp update_timestamp) {
-		this.updateTimestamp = update_timestamp;
+	public void setUpdateTimestamp(Timestamp updateTimestamp) {
+		this.updateTimestamp = updateTimestamp;
 	}
 
 	public String getAuthority() {
@@ -127,8 +127,8 @@ public class UserInfo implements UserDetails {
     	this.userId				= userInfo.getUserId();
     	this.password			= userInfo.getPassword();
     	this.name				= userInfo.getName();
-    	this.createTimestamp	= userInfo.getCreate_timestamp();
-    	this.updateTimestamp	= userInfo.getUpdate_timestamp();
+    	this.createTimestamp	= userInfo.getCreateTimestamp();
+    	this.updateTimestamp	= userInfo.getUpdateTimestamp();
     	this.authority			= userInfo.getAuthority();
     	this.deleteFlg			= userInfo.getDeleteFlg();
     }
